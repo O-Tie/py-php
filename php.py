@@ -3,8 +3,8 @@ import subprocess
 
 class PHP(object):
 
-    positiveRespone = ["yes", "y", "ok"]
-    negativeRespone = ["no", "n", "nok"]
+    positiveRespone = ["yes", "y", "ok", "да", "д"]
+    negativeRespone = ["no", "n", "nok", "нет", "н"]
     cmdCurrent = ["sudo", "-S", "php", "-v"]
     phpVersions = ["5.6", "7.0", "7.1", "7.2", "7.3"]
 
@@ -27,10 +27,13 @@ class PHP(object):
             print('Something went wrong')
 
     def setNewVersion(self):
-        print('new version change')
+        if self.getCurrentVersion() == self.getNewVersion():
+            return False
+        else:
+            subprocess.run("sudo -S update-alternatives --set php /usr/bin/php" + self.getNewVersion(), shell=True)
 
     def initPhpVersion(self):
-        process = input("Your current php version: " + self.getCurrentVersion() + ". Continue? [y/n]: ")
+        process = input("Your current php version: " + self.getCurrentVersion() + ". Continue? [y/n]: ").lower()
         if self.getProcess(process):
             self.setNewVersion()
         else:
