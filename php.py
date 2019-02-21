@@ -7,13 +7,18 @@ class PHP(object):
     negativeRespone = ["no", "n", "nok", "нет", "н"]
     cmdCurrent = ["sudo", "-S", "php", "-v"]
     phpVersions = ["5.6", "7.0", "7.1", "7.2", "7.3"]
+    newVersion = None
+
+    def __init__(self, newVersion = None):
+        self.newVersion = None
 
     def getNewVersion(self):
-        wantedVersion = str(input("Write php version: "))
+        wantedVersion = input("Write php version: ")
         if wantedVersion in self.phpVersions:
+            self.newVersion = wantedVersion
             return wantedVersion
         else:
-            print("Check avaliavle version please")
+            print("Check available version please")
             self.getNewVersion()
 
     def getCurrentVersion(self):
@@ -27,26 +32,21 @@ class PHP(object):
             print('Something went wrong')
 
     def setNewVersion(self):
-        if self.getCurrentVersion() == self.getNewVersion():
+        if self.getCurrentVersion() == self.newVersion:
             return False
         else:
-            subprocess.run("sudo -S update-alternatives --set php /usr/bin/php" + self.getNewVersion(), shell=True)
+            print(self.newVersion)
+            # subprocess.run("sudo -S update-alternatives --set php /usr/bin/php" + self.newVersion, shell=True)
 
     def initPhpVersion(self):
         process = input("Your current php version: " + self.getCurrentVersion() + ". Continue? [y/n]: ").lower()
-        if self.getProcess(process):
+        if process in self.positiveRespone:
             self.setNewVersion()
-        else:
-            return False
-
-
-    def getProcess(self, response):
-        if response in self.positiveRespone:
-            return True
-        elif response in self.negativeRespone:
+        elif process in self.negativeRespone:
             return False
         else:
             self.initPhpVersion()
+
 
 php = PHP()
 newVersion = php.initPhpVersion()
